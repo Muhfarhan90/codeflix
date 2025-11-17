@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\CheckDeviceLimit;
+use App\Http\Middleware\LogoutDevice;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -11,7 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias(['check.device.limit' => CheckDeviceLimit::class, 
+    'logout.device' => LogoutDevice::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

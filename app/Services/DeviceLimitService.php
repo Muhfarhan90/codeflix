@@ -30,6 +30,10 @@ class DeviceLimitService
         return $device;
     }
 
+    public function logoutDevice($deviceId) {
+        UserDevice::where('device_id', $deviceId)->delete();
+        session()->forget('device_id');
+    }
     private function getDeviceInfo()
     {
         return [
