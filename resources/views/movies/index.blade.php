@@ -32,7 +32,7 @@
                 @foreach ($latestMovies as $movie)
                     <div class="swiper-slide">
                         <div class="card">
-                            <a href="{{ route('home', $movie->id) }}">
+                            <a href="{{ route('movies.show', $movie->slug) }}">
                                 <img src="{{ $movie->poster }}" class="img-fluid h-100" alt="...">
                                 <span class="badge rounded-pill text-bg-dark badge-rating">
                                     <img class="star-rating" src="assets/img/star-rating.png" alt="">
@@ -63,7 +63,7 @@
                 @foreach ($popularMovies as $movie)
                     <div class="swiper-slide">
                         <div class="card">
-                            <a href="{{ route('home', $movie->id) }}">
+                            <a href="{{ route('movies.show', $movie->slug) }}">
                                 <img src="{{ $movie->poster }}" class="img-fluid h-100" alt="...">
                                 <span class="badge rounded-pill text-bg-dark badge-rating">
                                     <img class="star-rating" src="assets/img/star-rating.png" alt="">

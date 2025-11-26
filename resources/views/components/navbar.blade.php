@@ -11,11 +11,11 @@
         <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
             <x-category-nav />
             <form class="d-flex me-md-5 position-relative" role="search" method="GET"
-                action="{{ route('home') }}">
+                action="{{ route('movies.search') }}">
                 <input class="text-white form-control search-box pe-5" type="search" name="q"
                     placeholder="Cari Disini" value="{{ request('q') }}" aria-label="Search">
                 <button type="submit" class="search-btn">
-                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <i class="fa-solid fa-magnifying-glass search-icon" onclick="this.closest('form').submit();" style="cursor: pointer"></i>
                 </button>
             </form>
             <ul class="pt-3 nav-icon d-flex">
