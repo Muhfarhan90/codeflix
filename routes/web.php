@@ -4,6 +4,7 @@ use App\Events\MembershipHasExpired;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\SubscribeController;
+use App\Http\Controllers\TransactionController;
 use App\Models\Category;
 use App\Models\Membership;
 use Illuminate\Http\Request;
@@ -27,6 +28,8 @@ Route::get('/subscribe/plans', [SubscribeController::class, 'showPlans'])->name(
 Route::get('/subscribe/plans/{plan}', [SubscribeController::class, 'checkoutPlan'])->name('subscribe.checkout');
 Route::post('/subscribe/checkout', [SubscribeController::class, 'processCheckout'])->name('subscribe.process');
 Route::get('/subscribe/success', [SubscribeController::class, 'showSuccess'])->name('subscribe.success');
+
+Route::post('/checkout', [TransactionController::class, 'checkout'])->name('checkout');
 
 Route::get('/text-expired', function () {
     $membership = Membership::find(1);

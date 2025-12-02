@@ -43,93 +43,61 @@
                 </label>
             </div>
 
-            <form action={{ route('subscribe.process') }} method="POST">
-                @csrf
-                <input type="hidden" name="plan_id" value="{{ $plan->id }}">
-                <input type="hidden" name="total_payment" value="{{ $plan->price * 0.12 }}">
-                <button type="submit" class="w-100 btn btn-green" id="pay-button">Continue</button>
+            <form action="#" method="POST">
+                <button type="button" class="w-100 btn btn-green" id="pay-button">Continue</button>
             </form>
         </div>
     </div>
 @endsection
 
 @section('scripts')
-    {{-- <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}">
-    </script>
+    <script
+        src="{{ config('midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}"
+        data-client-key="{{ config('midtrans.client_key') }}"></script>
     <script>
-        function handlePayment(data) {
-            if (data.status === 'success') {
-                const validationToken = data.validation_token;
-
-                window.snap.pay(data.snap_token, {
-                    onSuccess: async function(result) {
-                        try {
-                            // Kirim request untuk register device
-                            const response = await fetch('/transaction/success', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                        .content
-                                },
-                                body: JSON.stringify({
-                                    order_id: result.order_id,
-                                    validation_token: validationToken,
-                                    transaction_id: result.transaction_id
-                                })
-                            });
-
-                            const responseData = await response.json();
-
-                            console.log(responseData);
-
-                            if (responseData.status === 'success') {
-                                window.location.href = responseData.redirect_url;
-                            } else {
-                                throw new Error(responseData.message);
-                            }
-                        } catch (error) {
-                            console.error('Error:', error);
-                            alert('Failed to process device registration. Please contact support.');
-                            window.location.href = '/';
-                        }
-                    },
-                    onPending: function(result) {
-                        window.location.href = '/payment/pending';
-                    },
-                    onError: function(result) {
-                        window.location.href = '/payment/error';
-                    },
-                    onClose: function() {
-                        alert('You closed the payment window without completing the payment');
-                    }
-                });
-            } else {
-                alert('Payment failed to initialize');
-            }
-        }
-        document.getElementById('pay-button').addEventListener('click', async function(e) {
+        const payButton = document.querySelector('#pay-button');
+        payButton.addEventListener('click', function(e) {
             e.preventDefault();
 
-            try {
-                const response = await fetch('/transaction/checkout', {
+            if (!document.querySelector('#terms').checked) {
+                alert('Anda harus menyetujui Syarat dan Ketentuan.');
+                return;
+            }
+            const totalAmount = {{ $plan->price * 1.11 }};
+
+            fetch('/checkout', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     },
                     body: JSON.stringify({
-                        plan_id: '{{ $plan->id }}',
-                        amount: '{{ $plan->price * 1.1 }}'
+                        plan_id: {{ $plan->id }},
+                        total_amount: totalAmount
                     })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.snap.pay(data.snap_token, {
+                            onSuccess: function(result) {
+                                window.location.href = '{{ route('subscribe.success') }}';
+                            },
+                            onPending: function(result) {
+                                alert('Payment is pending. Please complete the payment.');
+                            },
+                            onError: function(result) {
+                                alert('Payment failed. Please try again.');
+                            }
+                        });
+                    } else {
+                        alert('Failed to initiate payment. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat berkomunikasi dengan server.');
                 });
-
-                const data = await response.json();
-                handlePayment(data);
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to initialize payment');
-            }
         });
-    </script> --}}
+    </script>
 @endsection

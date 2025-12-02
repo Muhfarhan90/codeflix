@@ -1,7 +1,7 @@
 <ul class="mb-2 navbar-nav me-auto mb-lg-0">
     <li class="nav-item dropdown kategori-dropdown">
         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            KATEGORI
+            Category
         </a>
         <div class="dropdown-menu">
             @foreach ($categories as $chunk)
